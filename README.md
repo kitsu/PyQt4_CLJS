@@ -8,31 +8,28 @@ This is an experiment in extending ClojureScript's reach into the desktop space.
 This is specifically in support of an existing Python project I'm writing, but
 but should be extendable to arbitrary ClojureScript applications.
 
-## Setup [FIXME]
+## Setup
 
-To get an interactive development environment run:
+This requires Python 2.7 with the PyQt4 module installed. On Windows I recommend
+[Anaconda Python](https://www.continuum.io/downloads). Python must be on your
+path for the batch scripts to work.
 
-    lein figwheel
+This thing also uses [Leiningen](https://www.leiningen.org) to manage Clojure
+dependencies and perform ClojureScript builds. Lein must be on your path for the
+batch scripts to work. I also have `LEIN_JAVA_CMD` defined and java bin on my
+path.
 
-and open your browser at [localhost:3449](http://localhost:3449/).
-This will auto compile and send all changes to the browser without the
-need to reload. After the compilation process is complete, you will
-get a Browser Connected REPL. An easy way to try it is:
+The `run.cmd` batch script does a single ClojureScript build without advanced
+compilation, then runs the Python app from source. During development I just run
+`lein cljsbuild auto` in one shell window and manually run
+`python .\testbed\app.py` in another.
 
-    (js/alert "Am I connected?")
+The `build.cmd` batch script requires PyInstaller > v3.0. Note: at this time
+PyInstaller 3 is not in the conda package archives. You will need to install
+using pip or with a manual installer.
 
-and you should see an alert in the browser window.
-
-To clean all compiled files:
-
-    lein clean
-
-To create a production build run:
-
-    lein do clean, cljsbuild once min
-
-And open your browser in `resources/public/index.html`. You will not
-get live reloading, nor a REPL. 
+Building will compile ClojureScript with advanced optimizations and then bundle
+everything into a single executable in a _dist_ folder.
 
 ## License
 

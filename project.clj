@@ -1,8 +1,8 @@
 (defproject pyqt4-testbed "0.1.0-SNAPSHOT"
   :description "ClojureScript in PyQt4 Testbed"
-  :url "http://example.com/FIXME"
+  :url "https://www.github.com/kitsu/PyQt4_CLJS"
   :license {:name "BSD simplified 3-clause License"
-            :url "https://opensource.org/licenses/BSD-3-Clause"}
+            :url "https://www.opensource.org/licenses/BSD-3-Clause"}
 
   :min-lein-version "2.6.1"
   

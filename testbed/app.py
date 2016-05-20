@@ -11,11 +11,6 @@ import html
 settings = QWebSettings.globalSettings()
 settings.setAttribute(QWebSettings.DeveloperExtrasEnabled, True)
 
-def path2url(path):
-    """URL conversion for resources used from HTML."""
-    return urlparse.urljoin(
-      'file:', urllib.pathname2url(path))
-
 def get_resource_path(resource):
     """Resolves the app path when run as a script or frozen."""
     if hasattr(sys, '_MEIPASS'):
@@ -95,7 +90,6 @@ class TableWidget(QWebView):
     def get_scripts(self):
         """Load Jquery, default script, and user scripts."""
         scripts = list()
-        #scripts.append(html.script(url=path2url(get_resource_path('out/goog/base.js'))))
         scripts.append(html.script(url=get_resource_path('main.js')))
         return "".join(scripts)
 

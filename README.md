@@ -24,9 +24,9 @@ compilation, then runs the Python app from source. During development I just run
 `lein cljsbuild auto` in one shell window and manually run
 `python .\testbed\app.py` in another.
 
-The `build.cmd` batch script requires PyInstaller > v3.0. Note: at this time
-PyInstaller 3 is not in the conda package archives. You will need to install
-using pip or with a manual installer.
+The `build.cmd` batch script requires [PyInstaller](http://www.pyinstaller.org/)
+version >= v3.0. Note: at this time PyInstaller 3 is not in the conda package
+archives. You will need to install using pip or with a manual installer.
 
 Building will compile ClojureScript with advanced optimizations and then bundle
 everything into a single executable in a _dist_ folder.

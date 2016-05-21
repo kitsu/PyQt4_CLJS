@@ -1,6 +1,5 @@
 """Minimal Python container app."""
 import sys, os
-import urlparse, urllib
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtWebKit import QWebView, QWebSettings, QWebInspector
 qt = QtCore.Qt
@@ -43,7 +42,7 @@ class Proxy(QtCore.QObject):
         print msg
 
 class TableWidget(QWebView):
-    """Display tabular data extracted from column maps."""
+    """Display tabular data in a webview."""
 
     def __init__(self, headers, data):
         QWebView.__init__(self)
@@ -65,7 +64,7 @@ class TableWidget(QWebView):
         QWebView.contextMenuEvent(self, event)
 
     def build_page(self, headers, data):
-        """Build html table containing self.rows."""
+        """Build table html containing data rows."""
         table = html.doclist(headers, data)
         styles = self.get_styles()
         scripts = self.get_scripts()
@@ -74,9 +73,10 @@ class TableWidget(QWebView):
         self.setHtml(doc, QtCore.QUrl.fromLocalFile(basepath))
 
     def get_styles(self):
-        """Load the default style sheet, user style sheet, and user settings."""
+        """Create the default style sheet tag and set column widths."""
         styles = list()
         styles.append(html.css(get_resource_path('style.css')))
+        # This replaces user specified column widths from config file
         overrides = list()
         cw = ['2em', '3em', 'other']
         cwtmp = "span.col{} {{width: {}}}"
@@ -88,7 +88,7 @@ class TableWidget(QWebView):
 
 
     def get_scripts(self):
-        """Load Jquery, default script, and user scripts."""
+        """Create the main script tag."""
         scripts = list()
         scripts.append(html.script(url=get_resource_path('main.js')))
         return "".join(scripts)
@@ -100,7 +100,6 @@ class TableWidget(QWebView):
             inspect.setPage(self.page())
             self.inspector = inspect
         self.inspector.show()
-
 
 if __name__ == '__main__':
     headers = ["No.", "ID", "Name"]

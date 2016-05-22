@@ -114,6 +114,12 @@ if __name__ == '__main__':
             ("9", 'baz_3', 'baz',),
             ("10", 'spam_1', 'spam',),
             ("11", 'spam_2', 'spam',)]
+    import random
+    words = ("foo", "bar", "baz", "qux")
+    id_names = ((word + str(random.randint(0, 800)), word) for word in
+                (random.choice(words) for i in range(100)))
+    data = [(str(i + 1), id_name[0], id_name[1])
+            for i, id_name in enumerate(id_names)]
 
     appQt = QtGui.QApplication([sys.argv[0]])
     win = MainWindow(headers, data)

@@ -31,6 +31,13 @@ archives. You will need to install using pip or with a manual installer.
 Building will compile ClojureScript with advanced optimizations and then bundle
 everything into a single executable in a _dist_ folder.
 
+## Testing
+
+The tests for the ClojureScript code are written using
+[devcards](https://github.com/bhauman/devcards) and you can see them live update
+by running `lein figwheel test`, opening the "testcards/cards.html" file in a
+web browser (Chrome recommended), and editing "src/pyqt4_testbed/test/core.cljs".
+
 ## License
 
 Copyright © 2016 Edward Blake

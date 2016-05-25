@@ -10,7 +10,6 @@
                  [org.clojure/clojurescript "1.8.51"]
                  [org.clojure/core.async "0.2.374"
                   :exclusions [org.clojure/tools.reader]]
-                 [org.clojure/test.check "0.9.0"]
                  [prismatic/dommy "1.1.0"]
                  [devcards "0.2.1-7"]]
   

@@ -58,7 +58,7 @@
   "Try to get a channel from source, return vector of channels values."
   [source-chan]
   (go
-    (let [ch (poll! source-chan time)]
+    (let [ch (poll! source-chan)]
       (when ch
         (loop [val (<! ch) acc []]
           (if val

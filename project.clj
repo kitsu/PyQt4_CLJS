@@ -10,7 +10,8 @@
                  [org.clojure/clojurescript "1.8.51"]
                  [org.clojure/core.async "0.2.374"
                   :exclusions [org.clojure/tools.reader]]
-                 [prismatic/dommy "1.1.0"]]
+                 [prismatic/dommy "1.1.0"]
+                 [devcards "0.2.1-7"]]
   
   :plugins [[lein-cljsbuild "1.1.3" :exclusions [[org.clojure/clojure]]]]
 
@@ -27,12 +28,20 @@
                            :output-to "testbed/main.js"
                            :output-dir "testbed/lib"
                            :source-map-timestamp true}}
+               {:id "test"
+                :source-paths ["src"]
+                :compiler {:main pyqt4-testbed.test.core
+                           :devcards true
+                           :asset-path "lib"
+                           :output-to "testcards/main.js"
+                           :output-dir "testcards/lib"
+                           :source-map-timestamp true}}
                ;; This next build is an compressed minified build for
                ;; production. You can build this with:
                ;; lein cljsbuild once min
                {:id "min"
                 :source-paths ["src"]
-                :compiler {:output-to "testbed/main.js"
-                           :main pyqt4-testbed.core
+                :compiler {:main pyqt4-testbed.core
+                           :output-to "testbed/main.js"
                            :optimizations :advanced
                            :pretty-print false}}]})

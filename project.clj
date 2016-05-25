@@ -10,10 +10,12 @@
                  [org.clojure/clojurescript "1.8.51"]
                  [org.clojure/core.async "0.2.374"
                   :exclusions [org.clojure/tools.reader]]
+                 [org.clojure/test.check "0.9.0"]
                  [prismatic/dommy "1.1.0"]
                  [devcards "0.2.1-7"]]
   
-  :plugins [[lein-cljsbuild "1.1.3" :exclusions [[org.clojure/clojure]]]]
+  :plugins [[lein-cljsbuild "1.1.3" :exclusions [[org.clojure/clojure]]]
+            [lein-figwheel "0.5.3-2"]]
 
   :source-paths ["src"]
 
@@ -30,8 +32,8 @@
                            :source-map-timestamp true}}
                {:id "test"
                 :source-paths ["src"]
+                :figwheel {:devcards true}
                 :compiler {:main pyqt4-testbed.test.core
-                           :devcards true
                            :asset-path "lib"
                            :output-to "testcards/main.js"
                            :output-dir "testcards/lib"

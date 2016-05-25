@@ -6,8 +6,9 @@
   (:require-macros [cljs.core.async.macros :as async-macros
                     :refer [go go-loop do-alt alt!]]))
 
-(defn evt-chan [target kind btn]
-  ;; The sliding buffer probably isn't needed anymore?
+(defn evt-chan
+  "Create channel of tagged events from target element."
+  [target kind btn]
   (let [out (chan (sliding-buffer 1))]
     (dommy/listen! target kind
                   (fn [evt]
@@ -15,8 +16,9 @@
                       (put! out [kind evt]))))
     out))
 
-(defn get-row-num [evt]
-  ;; Extract the row number from a mouse event
+(defn get-row-num
+  "Extract the row number from a mouse event."
+  [evt]
   (let [target (.-target evt)
         id (.-id target)
         kind (subs id 0 3)
@@ -25,12 +27,14 @@
       (int (subs (.-id (.-parentElement target)) 3))
       num)))
 
-(defn get-highlight [target]
-  ;; Return vector of bools where true means highlighted
+(defn get-highlight
+  "Return vector of bools where true means highlighted."
+  [target]
   (mapv #(dommy/has-class? % "marked") (sel target "div.row")))
 
-(defn toggle-highlight [initial start end]
-  ;; Ensure all rows have correct highlight.
+(defn toggle-highlight
+  "Ensure all rows have correct highlight."
+  [initial start end]
   (let [[start end] (if (> start end) [end start] [start end])]
     (dorun
      (map-indexed (fn [id high]
@@ -47,13 +51,18 @@
                           (dommy/toggle-class! row "marked")))))
                   initial))))
 
-(defn build-drag-chan [target]
-  ;; Setup event source channels and start producing drag sub-channels
+(defn mouse-input-chan
+  "Build aggregate channel of mouse events."
+  [target]
+  (async/merge [(evt-chan target :mousedown 0)
+                (evt-chan target :mousemove 0)
+                (evt-chan target :mouseup 0)
+                (evt-chan target :mouseleave 0)]))
+
+(defn build-drag-chan
+  "Setup event source channels and start producing drag sub-channels."
+  [input-chan]
   (let [output-chan (chan)
-        input-chan (async/merge [(evt-chan target :mousedown 0)
-                                 (evt-chan target :mousemove 0)
-                                 (evt-chan target :mouseup 0)
-                                 (evt-chan target :mouseleave 0)])
         terminals #{:mouseup :mouseleave}]
     (go-loop [[tag evt] (<! input-chan)]
       (when (= tag :mousedown)
@@ -74,20 +83,22 @@
     output-chan))
 
 (defn main []
-  ;; Get handle of target element and create drag channel
-  (let [target (sel1 :#doclist)
-        drag-chan (build-drag-chan target)]
-    ;; Loop forever pulling channels of drag events from drag-chan
-    (go-loop [drag-set (<! drag-chan)]
-      ;; Store the initial row and all highlight states
-      (let [row (get-row-num (<! drag-set))
-            highlight (get-highlight target)]
-        ;; Consume events from drag-set until it is closed
-        (loop [evt (<! drag-set)]
-         (when evt
-           ;; update highlighting...
-           (toggle-highlight highlight row (get-row-num evt))
-           (recur (<! drag-set)))))
-      (recur (<! drag-chan)))))
+  ;; Get handle of target element, if not found exit 
+  (when-let [target (sel1 :#doclist)]
+    ;; Create drag channel and start mainloop
+    (let [input-chan (mouse-input-chan target)
+          drag-chan (build-drag-chan input-chan)]
+     ;; Loop forever pulling channels of drag events from drag-chan
+     (go-loop [drag-set (<! drag-chan)]
+       ;; Store the initial row and all highlight states
+       (let [row (get-row-num (<! drag-set))
+             highlight (get-highlight target)]
+         ;; Consume events from drag-set until it is closed
+         (loop [evt (<! drag-set)]
+           (when evt
+             ;; update highlighting...
+             (toggle-highlight highlight row (get-row-num evt))
+             (recur (<! drag-set)))))
+       (recur (<! drag-chan))))))
 
 (dommy/listen! js/window :load main)
